@@ -951,7 +951,7 @@
 
 <!-- 입력창 -->
 <div class="input-area" style="position:relative;">
-  <div class="suggest-tray" id="suggestTray">
+  <div class="suggest-tray" id="suggestTray" style="display:none;">
     <div class="suggest-label">💬 이렇게 말 걸어봐</div>
     <div id="suggestList"><div class="inner-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
   </div>
@@ -965,7 +965,7 @@
   <div class="input-row">
     <textarea id="msgInput" placeholder="메시지 입력..." rows="1" onkeydown="if(event.keyCode===13&&!event.shiftKey){event.preventDefault();sendMessage();return false;}"></textarea>
     <button class="suggest-btn" onclick="toggleSuggest()" title="대화 추천">💡</button>
-    <button class="suggest-btn" onclick="showSuggest()" title="대화 추천">💬</button>
+    
     <button class="action-btn" onclick="insertParens()" title="행동/혼잣말">(  )</button>
     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
       <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -1233,16 +1233,16 @@
   }
 
   function closeSuggest() {
-    document.getElementById('suggestTray').classList.remove('show');
+    document.getElementById('suggestTray').style.display = 'none';
   }
 
   async function showSuggest() {
     const tray = document.getElementById('suggestTray');
     const list = document.getElementById('suggestList');
     // 이미 열려있으면 닫기
-    if (tray.classList.contains('show')) { tray.classList.remove('show'); return; }
+    if (tray.style.display === 'flex') { tray.style.display = 'none'; return; }
     list.innerHTML = '<div class="inner-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-    tray.classList.add('show');
+    tray.style.display = 'flex';
 
     // 최근 대화 맥락
     const recentHistory = history.slice(-8).map(m =>
@@ -1470,7 +1470,7 @@ ${moodInfo}
     document.getElementById('msgInput').value = text;
     document.getElementById('msgInput').style.height = 'auto';
     document.getElementById('msgInput').style.height = Math.min(document.getElementById('msgInput').scrollHeight, 100) + 'px';
-    document.getElementById('suggestTray').classList.remove('show');
+    document.getElementById('suggestTray').style.display = 'none';
     suggestOpen = false;
     document.getElementById('msgInput').focus();
   }
