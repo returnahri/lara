@@ -1089,6 +1089,8 @@
     history = [];
     await store.remove(HISTORY_KEY);
     await store.remove(SUMMARY_KEY);
+    await store.remove('lara_state');
+    laraState = pickLaraState();
     const area = document.getElementById('chatArea');
     area.innerHTML = '<div class="date-divider">오늘</div>';
     hideResetModal();
@@ -1228,6 +1230,8 @@
       if (found) {
         laraState = moodMap[found];
         document.getElementById('laraStatusBadge').textContent = laraState.emoji + ' ' + laraState.label;
+        // 상태 저장
+        await store.set('lara_state', JSON.stringify(laraState));
       }
     } catch(e) {}
   }
@@ -1561,8 +1565,13 @@ ${moodInfo}
 
   // 초기화
   window.onload = async () => {
-    // 라라 오늘의 상태 결정
-    laraState = pickLaraState();
+    // 저장된 라라 상태 불러오기, 없으면 랜덤
+    const savedState = await store.get('lara_state');
+    if (savedState) {
+      try { laraState = JSON.parse(savedState); } catch(e) { laraState = pickLaraState(); }
+    } else {
+      laraState = pickLaraState();
+    }
     document.getElementById('laraStatusPreview').textContent = `오늘 라라는 ${laraState.emoji} ${laraState.label}`;
     // async로 store에서 API 키 불러오기    // async로 store에서 API 키 불러오기
     const saved = await store.get('lara_api_key');
